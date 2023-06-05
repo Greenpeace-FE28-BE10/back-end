@@ -17,6 +17,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: { model: "communities", key: "id" },
       },
+      community_role: {
+        type: Sequelize.ENUM("leader", "member"),
+        defaultValue: "member",
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
