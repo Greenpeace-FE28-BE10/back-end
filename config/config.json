@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "hijauin",
+    "password": "!@hijauin@!",
+    "database": "hijauin",
+    "host": "db4free.net",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "hijauin",
+    "password": "!@hijauin@!",
+    "database": "hijauin",
+    "host": "db4free.net",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "hijauin",
+    "password": "!@hijauin@!",
+    "database": "hijauin",
+    "host": "db4free.net",
+    "dialect": "mysql"
+  }
+}
