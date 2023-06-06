@@ -6,16 +6,16 @@ Untuk melakukan kontribusi ikuti langkah berikut:
 
 ```console
 // Penamaan branch
-Contoh: kevin
+Contoh: monika
 
 // Membuat branch
-git branch namaBranch (contoh: git branch kevin)
+git branch namaBranch (contoh: git branch monika)
 
 // Pindah ke branch
-git checkout namaBranch (contoh: git checkout kevin)
+git checkout namaBranch (contoh: git checkout monika)
 
 // Hapus branch
-git branch -d namaBranch (contoh: git branch -d kevin)
+git branch -d namaBranch (contoh: git branch -d monika)
 ```
 
 2. Buat kodingan untuk fitur yang sudah dibagikan.
@@ -66,19 +66,19 @@ git push -u origin kevin
 
 Ikuti langkah di bawah ini untuk menjalankan project di local
 
-###1. Clone Repository
+### 1. Clone Repository
 
 ```bash
 git clone (https://github.com/Greenpeace-FE28-BE10/back-end.git)
 ```
 
-###2. Install Dependencies
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-###3. Start the Application
+### 3. Start the Application
 
 ```bash
 npm start
