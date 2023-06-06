@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class communityActivity extends Model {
     /**
@@ -13,15 +11,22 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  communityActivity.init({
-    communities_id: DataTypes.INTEGER,
-    title: DataTypes.STRING,
-    description: DataTypes.TEXT,
-    date: DataTypes.DATE,
-    status: DataTypes.ENUM
-  }, {
-    sequelize,
-    modelName: 'communityActivity',
-  });
+  communityActivity.init(
+    {
+      communities_id: DataTypes.INTEGER,
+      title: DataTypes.STRING,
+      description: DataTypes.TEXT,
+      date: DataTypes.DATE,
+      status: {
+        type: DataTypes.ENUM,
+        values: ["upcoming", "on progress", "done"],
+        defaultValue: "upcoming",
+      },
+    },
+    {
+      sequelize,
+      modelName: "communityActivity",
+    }
+  );
   return communityActivity;
 };
