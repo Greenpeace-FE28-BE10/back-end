@@ -7,7 +7,7 @@ module.exports = {
       "communities",
       [
         {
-          leader_id: 1,
+          leader_id: 36,
           name: "Komunitas Hijauin Medan",
           location: "Medan",
           description: "Komunitas Hijauin Medan adalah Lorem ipsum dolor sit Amet.",
@@ -15,7 +15,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          leader_id: 2,
+          leader_id: 37,
           name: "Komunitas Hijauin Dairi",
           location: "Kab. Dairi, Sumatera Utara",
           description: "Komunitas Hijauin Dairi adalah Lorem ipsum dolor sit Amet.",
@@ -23,7 +23,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          leader_id: 3,
+          leader_id: 38,
           name: "Komunitas Hijauin Jakarta",
           location: "Jakarta",
           description: "Komunitas Hijauin Jakarta adalah Lorem ipsum dolor sit Amet.",
@@ -31,7 +31,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          leader_id: 4,
+          leader_id: 39,
           name: "Komunitas Hijauin Palembang",
           location: "Kota Palembang",
           description: "Komunitas Hijauin Palembang adalah Lorem ipsum dolor sit Amet.",
@@ -39,7 +39,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          leader_id: 5,
+          leader_id: 40,
           name: "Komunitas Hijauin Universitas Sumatera Utara",
           location: "Medan Kota",
           description: "Komunitas Hijauin Medan adalah Lorem ipsum dolor sit Amet.",
