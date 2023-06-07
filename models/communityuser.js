@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       users_id: DataTypes.INTEGER,
       communities_id: DataTypes.INTEGER,
-      community_role: DataTypes.ENUM,
+      community_role: DataTypes.ENUM("leader", "member"),
     },
     {
       sequelize,
