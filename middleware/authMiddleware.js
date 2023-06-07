@@ -26,3 +26,13 @@ module.exports.authenticate = (req, res, next) => {
         });
     });
   };
+
+// cek role admin
+module.exports.isAdmin = (req, res, next) => {
+  if (User.role !== 'admin') {
+      return res.status(403).json({ message: 'Forbidden' });
+    } else {
+      next();
+      return
+  }
+};

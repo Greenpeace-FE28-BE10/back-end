@@ -8,5 +8,9 @@ router.get('/users', authMiddleware.authenticate, (req, res) => {
     res.send('Khusus user pemilik akun')
 });
 
+router.get('/admin', authMiddleware.authenticate, authMiddleware.isAdmin, (req, res) => {
+ res.send('dashboard admin')
+});
+
 
 module.exports = router;
