@@ -8,8 +8,8 @@ router.get('/users', authMiddleware.authenticate, (req, res) => {
     res.send('Khusus user pemilik akun')
 });
 
-router.get('/admin', authMiddleware.authenticate, authMiddleware.isAdmin, (req, res) => {
- res.send('dashboard admin')
+router.get('/admin', authMiddleware.authenticate, authMiddleware.checkAdminRole, (req, res) => {
+ res.send('Dashboard Admin')
 });
 
 

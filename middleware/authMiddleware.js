@@ -28,11 +28,23 @@ module.exports.authenticate = (req, res, next) => {
   };
 
 // cek role admin
-module.exports.isAdmin = (req, res, next) => {
-  if (User.role !== 'admin') {
+module.exports.checkAdminRole = (req, res, next) => {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+
+  try {
+    const decodedToken = jwt.verify(token, process.env.jwtSecret);
+    const { role } = decodedToken;
+
+    if (role !== 'admin') {
       return res.status(403).json({ message: 'Forbidden' });
-    } else {
-      next();
-      return
+    }
+
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: 'Internal Server Error' });
   }
 };
