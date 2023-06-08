@@ -24,9 +24,55 @@ exports.login = async (req, res) => {
       const token = jwt.sign({ email:user.email, password: user.password, role: user.role }, process.env.jwtSecret, { expiresIn: '1h' });
   
       // Return token
-      res.json({message: user, token });
+      res.json({
+        message: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          address: user.address,
+          role: user.role
+        }, 
+        token 
+      });
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Internal server error', err: error });
     }
-  };
+};
+
+exports.register = async (req, res) => {
+    const { email, name, address, password } = req.body;
+    try {
+      // Check if user with the same username already exists
+      const checkEmail = await User.findOne({ where: { email } });
+      if (checkEmail) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
+  
+      // Create a new user
+      const pwd = await bcrypt.hash(password, 10)
+      const newUser = await User.create({
+        email,
+        name,
+        address,
+        password: pwd
+      });
+  
+      // Generate JWT token
+      const token = jwt.sign({ email:newUser.email, password: newUser.password, role: newUser.role }, `${process.env.jwtSecret}`, { expiresIn: '1h' });
+  
+      // Return token
+      res.json({
+        data: {
+          email: newUser.email,
+          name: newUser.name,
+          address: newUser.address
+        }, 
+        token,
+        message: 'Registrasi Success' 
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+};
