@@ -1,8 +1,6 @@
 // all functions related to community are listed down below
 const { Sequelize } = require("sequelize");
-const CommunityModel = require("../models").community;
-const CommunityUser = require("../models").communityUser;
-const CommunityActivityModel = require("../models").communityActivity;
+const CommunityModel = require("../models").Community;
 
 // READ - GET
 const getAllCommunity = async (req, res) => {
