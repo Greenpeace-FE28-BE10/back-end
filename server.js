@@ -5,7 +5,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3030;
-const bodyParser = require("body-parser");
 const communitiesRoutes = require("./routes/communityRoutes");
 const activityRoutes = require("./routes/communityActivityRoutes");
 const userRoutes = require("./routes/userRoutes");
