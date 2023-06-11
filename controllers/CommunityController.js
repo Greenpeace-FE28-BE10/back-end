@@ -1,17 +1,20 @@
 // all functions related to community are listed down below
 const { Sequelize } = require("sequelize");
-const CommunityModel = require("../models").Community;
+const CommunityModel = require("../models").community;
+const CommunityActivityModel = require("../models").communityActivity;
 
 // READ - GET
 const getAllCommunity = async (req, res) => {
   try {
     const data = await CommunityModel.findAll();
     res.json({
+      success: true,
       message: "GET all community success",
       data: data,
     });
   } catch (error) {
     res.status(500).json({
+      success: false,
       message: "Error retrieving communities",
       error: error.message,
     });
@@ -42,11 +45,13 @@ const getCommunityDetail = async (req, res) => {
   // untuk mengecek apakah data yang coba diambil ada di db atau tidak
   if (communityDetail === null) {
     response = {
+      success : false,
       status: "SUCCESS",
       message: "Data not found",
     };
   } else {
     response = {
+      success: true,
       status: "SUCCESS",
       message: "GET Detail Community",
       communityDetail: communityDetail,
