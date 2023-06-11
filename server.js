@@ -2,19 +2,24 @@
 require("dotenv").config();
 
 const express = require("express");
-const communitiesRoutes = require("./routes/communityRoutes");
-const userRoutes = require('./routes/userRoutes');
-const bodyParser = require('body-parser');
-
-
+const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3030;
+const adminRoutes = require("./routes/adminRoutes");
+const guestRoutes = require("./routes/guestRoutes");
+const userRoutes = require("./routes/userRoutes");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/api/v1/communities", communitiesRoutes);
-app.use("/api/v1", userRoutes)
+// GUEST
+app.use("/api", guestRoutes);
+
+// ADMIN
+app.use("/api/v1", adminRoutes);
+
+// USER
+app.use("/api/v2", userRoutes);
 
 app.listen(port, () => {
   console.log(`Server berhasil di running di port ${port}`);
