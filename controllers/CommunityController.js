@@ -1,16 +1,45 @@
 // all functions related to community are listed down below
 const { Sequelize } = require("sequelize");
+const { format } = require("date-fns");
+const { id } = require("date-fns/locale");
 const CommunityModel = require("../models").community;
+const UserModel = require("../models").user;
 const CommunityActivityModel = require("../models").communityActivity;
 
 // READ - GET
 const getAllCommunity = async (req, res) => {
   try {
-    const data = await CommunityModel.findAll();
+    const communities = await CommunityModel.findAll({
+      attributes: ["id", "name", "location", "leader_id"],
+    });
+
+    const leaderIds = communities.map((community) => community.leader_id); // mengambil semua leader_id dari communities
+
+    // mengambil semua data nama dan id leader yang ada di variabel leaderIds
+    const leaders = await UserModel.findAll({
+      attributes: ["id", "name"],
+      where: {
+        id: leaderIds,
+      },
+    });
+
+    const leaderMap = leaders.reduce((map, leader) => {
+      map[leader.id] = leader.name; // mapping leader_id dan leader leader_name
+      return map;
+    }, {});
+
+    const communityData = communities.map((community) => ({
+      id: community.id,
+      name: community.name,
+      location: community.location,
+      leader_id: community.leader_id,
+      leader_name: leaderMap[community.leader_id], // Add leader name to each community object
+    }));
+
     res.json({
       success: true,
-      message: "GET all community success",
-      data: data,
+      message: "SUCCESS",
+      communityData: communityData,
     });
   } catch (error) {
     res.status(500).json({
@@ -23,44 +52,76 @@ const getAllCommunity = async (req, res) => {
 
 // READ - GET DETAIL
 const getCommunityDetail = async (req, res) => {
-  // membuat variabel untuk menyimpan status, message, dan data
-  let response = {};
+  try {
+    // membuat variabel untuk menyimpan status, message, dan data
+    let response = {};
+    let communityId = req.params.id;
 
-  // menyimpan parameter id ke variabel communityId
-  const communityId = req.params.id;
+    // mengambil data komunitas dan aktivitasnya berdasarkan communityId
+    const communityDetail = await CommunityModel.findByPk(communityId, {
+      attributes: ["id", "name", "location", "description", "leader_id"],
+    });
 
-  // mengambil data komunitas dan aktivitasnya berdasarkan communityId
-  const communityDetail = await CommunityModel.findByPk(communityId);
-  const communityActivities = await CommunityActivityModel.findAll({
-    where: {
-      communities_id: communityId,
-    },
-    attributes: ["communities_id", "title", "description", "date", "status"],
-    group: [
-      "status",
-      "id", // Include the non-aggregated column 'id'
-    ],
-  });
+    // mengambil aktivitas di satu komunitas
+    const communityActivities = await CommunityActivityModel.findAll({
+      where: {
+        communities_id: communityId,
+      },
+      attributes: ["communities_id", "title", "description", "date", "status"],
+      group: ["status", "id"],
+    });
 
-  // untuk mengecek apakah data yang coba diambil ada di db atau tidak
-  if (communityDetail === null) {
-    response = {
-      success : false,
-      status: "SUCCESS",
-      message: "Data not found",
-    };
-  } else {
-    response = {
-      success: true,
-      status: "SUCCESS",
-      message: "GET Detail Community",
-      communityDetail: communityDetail,
-      communityActivities: communityActivities,
-    };
+    // mengubah format tanggal di dalam array communityActivities
+    const formattedActivities = communityActivities.map((activity) => {
+      const formattedDate = format(new Date(activity.date), "dd LLLL yyyy", {
+        locale: id,
+      });
+
+      return {
+        title: activity.title,
+        description: activity.description,
+        date: formattedDate,
+        status: activity.status,
+      };
+    });
+
+    // mengambil data leader komunitas
+    const leader = await UserModel.findByPk(communityDetail.leader_id, {
+      attributes: ["id", "name"],
+    });
+
+    // untuk mengecek apakah data yang coba diambil ada di db atau tidak
+    if (!communityDetail) {
+      response = {
+        success: false,
+        status: "SUCCESS",
+        message: "No community exists with such id",
+      };
+    } else {
+      response = {
+        success: true,
+        status: "SUCCESS",
+        message: "Community Detail with Activities and its leader information",
+        communityDetail: {
+          id: communityDetail.id,
+          name: communityDetail.name,
+          location: communityDetail.location,
+          description: communityDetail.description,
+        },
+        communityActivities: formattedActivities,
+        communityLeader: leader,
+      };
+    }
+
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      status: "ERROR",
+      message: "Error retrieving community detail",
+      error: error.message,
+    });
   }
-
-  res.status(200).json(response);
-  return;
 };
 
 // CREATE - POST
