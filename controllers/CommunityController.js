@@ -1,18 +1,21 @@
 // all functions related to community are listed down below
 const { Sequelize } = require("sequelize");
-const CommunityModel = require("../models").Community;
+const CommunityModel = require("../models").community;
+const CommunityActivityModel = require("../models").communityActivity;
 
 // READ - GET
 const getAllCommunity = async (req, res) => {
   try {
     const data = await CommunityModel.findAll();
     res.json({
-      message: "GET all users success",
+      success: true,
+      message: "GET all community success",
       data: data,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving users",
+      success: false,
+      message: "Error retrieving communities",
       error: error.message,
     });
   }
@@ -25,21 +28,34 @@ const getCommunityDetail = async (req, res) => {
 
   // menyimpan parameter id ke variabel communityId
   const communityId = req.params.id;
-  console.log(communityId);
-  // mengambil data berdasarkan primary key
+
+  // mengambil data komunitas dan aktivitasnya berdasarkan communityId
   const communityDetail = await CommunityModel.findByPk(communityId);
+  const communityActivities = await CommunityActivityModel.findAll({
+    where: {
+      communities_id: communityId,
+    },
+    attributes: ["communities_id", "title", "description", "date", "status"],
+    group: [
+      "status",
+      "id", // Include the non-aggregated column 'id'
+    ],
+  });
 
   // untuk mengecek apakah data yang coba diambil ada di db atau tidak
   if (communityDetail === null) {
     response = {
+      success : false,
       status: "SUCCESS",
       message: "Data not found",
     };
   } else {
     response = {
+      success: true,
       status: "SUCCESS",
       message: "GET Detail Community",
-      response: communityDetail,
+      communityDetail: communityDetail,
+      communityActivities: communityActivities,
     };
   }
 
@@ -78,11 +94,19 @@ const createNewCommunity = async (req, res) => {
     };
   } else {
     try {
+      // buat komunitas baru
       const newCommunity = await CommunityModel.create({
         leader_id: req.body.leader_id,
         name: req.body.name,
         location: req.body.location,
         description: req.body.description,
+      });
+
+      // leader sebagai anggota komunitas yang baru
+      const newCommunityUser = await CommunityUser.create({
+        users_id: req.body.leader_id,
+        communities_id: newCommunity.id,
+        community_role: "leader",
       });
 
       response = {
@@ -194,6 +218,22 @@ const deleteCommunity = async (req, res) => {
   let code = 200;
 
   const communityId = req.params.id;
+
+  // hapus semua data member komunitas
+  await CommunityUser.destroy({
+    where: {
+      communities_id: communityId,
+    },
+  });
+
+  // hapus semua data aktivitas komunitas
+  await CommunityActivityModel.destroy({
+    where: {
+      communities_id: communityId,
+    },
+  });
+
+  // menghapus komunitas
   const community = await CommunityModel.findByPk(communityId);
   if (!community) {
     code = 422;
