@@ -1,13 +1,16 @@
 // get config vars
 require("dotenv").config();
-
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT || 3030;
 const adminRoutes = require("./routes/adminRoutes");
 const guestRoutes = require("./routes/guestRoutes");
 const userRoutes = require("./routes/userRoutes");
+
+// Enable CORS for all routes
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
