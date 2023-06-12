@@ -10,7 +10,13 @@ const guestRoutes = require("./routes/guestRoutes");
 const userRoutes = require("./routes/userRoutes");
 
 // Enable CORS for all routes
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    allowedHeaders: "Content-Type,Authorization",
+  })
+);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
