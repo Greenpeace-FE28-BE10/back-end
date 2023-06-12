@@ -1,85 +1,204 @@
-### How to Contribute
+## Endpoints
 
-Untuk melakukan kontribusi ikuti langkah berikut:
+### POST /api/login
 
-1. Buat branch baru sesuai dengan nama masing-masing.
+- **Description**: Allows a guest to log in to Hijauin.
+- **Input**: email, password
+- **Authentication**: No
+- **Authorization**: No
+- **Response**: User authentication token
 
-```console
-// Penamaan branch
-Contoh: monika
+---
 
-// Membuat branch
-git branch namaBranch (contoh: git branch monika)
+### POST /api/register
 
-// Pindah ke branch
-git checkout namaBranch (contoh: git checkout monika)
+- **Description**: Allows a guest to register a new user in Hijauin.
+- **Input**: email, name, address, password, role
+- **Authentication**: No
+- **Authorization**: No
+- **Response**: User registration confirmation
 
-// Hapus branch
-git branch -d namaBranch (contoh: git branch -d monika)
-```
+---
 
-2. Buat kodingan untuk fitur yang sudah dibagikan.
-3. Pastikan kodingan tidak ada **error** dan tidak mempengaruhi kodingan lain secara **fatal**.
-4. Menambahkan file dari working directory ke staging index
+### GET /api/communities
 
-```console
-git add .
+- **Description**: Retrieves a list of communities.
+- **Authentication**: No
+- **Authorization**: No
+- **Response**: List of communities
 
-// Menambahkan file tertentu
-git add index.blade.php
-```
+---
 
-5. Mengecek status dari repository
+### GET /api/communities/{id}
 
-```console
-git status
-```
+- **Description**: Retrieves the details of a specific community, including its activities and leader.
+- **Input**: id
+- **Authentication**: No
+- **Authorization**: No
+- **Response**: Community details
 
-6. Commit file
-   Pastikan pesan commit yang dikirim sesuai dengan fitur yang dibuat:
+---
 
-- feat: Menambahkan fitur, halaman, dan komponen baru.
-- fix: Menyelesaikan dan menghilangkan bug atau error.
-- style: Menambahkan custom style pada file css atau tailwind.config.js.
-- test: Semua hal yang berkaitan dengan testing.
-- docs: Semua hal yang berkaitan dengan dokumentasi.
-- chore: Semua hal yang berkaitan dengan maintenance.
+### GET /api/v1/dashboard
 
-```console
-git commit -m "pesan commit"
+- **Description**: Retrieves the authorized homepage for an admin.
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: Admin dashboard
 
-// Commit sesuai kategori
-git commit -m "feat: add competition page"
-git commit -m "fix: fix hide modal when button is pressed"
-git commit -m "style: add new background pattern"
-```
+---
 
-7. Push file ke repository. Jangan langsung push ke main, push ke branch sesuai yang kalian kerjakan.
+### GET /api/v1/communities
 
-```console
-git push -u origin kevin
-```
+- **Description**: Retrieves a list of communities for an admin.
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: List of communities
 
-8. Lakukan pull request untuk di review dan di merge ke development branch. Development branch akan di merge ke main branch jika project sudah final.s
+---
 
-### Getting Started
+### GET /api/v1/communities/{id}
 
-Ikuti langkah di bawah ini untuk menjalankan project di local
+- **Description**: Retrieves the details of a specific community for an admin, including its activities and leader.
+- **Input**: id
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: Community details
 
-### 1. Clone Repository
+---
 
-```bash
-git clone (https://github.com/Greenpeace-FE28-BE10/back-end.git)
-```
+### POST /api/v1/communities
 
-### 2. Install Dependencies
+- **Description**: Allows an admin to create a new community.
+- **Input**: leader_id, name, location, description
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: New community details
 
-```bash
-npm install
-```
+---
 
-### 3. Start the Application
+### PATCH /api/v1/communities/{id}
 
-```bash
-npm start
-```
+- **Description**: Allows an admin to update the information of a community.
+- **Input**: id, leader_id, name, location, description
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: Updated community details
+
+---
+
+### DELETE /api/v1/communities/{id}
+
+- **Description**: Allows an admin to delete a community.
+- **Input**: id
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: Deletion confirmation
+
+---
+
+### GET /api/v1/communities/{id}/community-members
+
+- **Description**: Retrieves a list of members in a community for an admin.
+- **Input**: id
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: List of community members
+
+---
+
+### POST /api/v1/communities/{id}/community-members
+
+- **Description**: Allows an admin to create a new community user.
+- **Input**: users_id, communities_id
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: New community user details
+
+---
+
+### DELETE /api/v1/community-members/{id}
+
+- **Description**: Allows an admin to delete a community user.
+- **Input**: id
+- **Authentication**: Yes
+- **Authorization**: Admin
+- **Response**: Deletion confirmation
+
+---
+
+### GET /api/v2/home
+
+- **Description**: Retrieves the authorized homepage for a user.
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: User homepage
+
+---
+
+### GET /api/v2/communities
+
+- **Description**: Retrieves a list of communities for a user.
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: List of communities
+
+---
+
+### GET /api/v2/communities/{id}
+
+- **Description**: Retrieves the details of a specific community for a user, including its activities and leader.
+- **Input**: id
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: Community details
+
+---
+
+### POST /api/v2/communities
+
+- **Description**: Allows a user to create a new community.
+- **Input**: leader_id, name, location, description
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: New community details
+
+---
+
+### PATCH /api/v2/communities/{id}
+
+- **Description**: Allows a user who is the leader of a community to update the information of that community.
+- **Input**: id, leader_id, name, location, description
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: Updated community details
+
+---
+
+### POST /api/v2/communities/membership
+
+- **Description**: Allows a user to join a community.
+- **Input**: users_id, communities_id
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: Membership confirmation
+
+---
+
+### POST /api/v2/communities/activity
+
+- **Description**: Allows a user who is the leader of a community to create a new activity in that community.
+- **Input**: id, communities_id, title, description, date, status
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: New activity details
+
+---
+
+### PATCH /api/v2/communities/activity/{id}
+
+- **Description**: Allows a user who is the leader of a community to update an activity in that community.
+- **Input**: id
+- **Authentication**: Yes
+- **Authorization**: User
+- **Response**: Updated activity
