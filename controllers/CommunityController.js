@@ -3,6 +3,7 @@ const { Sequelize } = require("sequelize");
 const { format } = require("date-fns");
 const { id } = require("date-fns/locale");
 const CommunityModel = require("../models").community;
+const CommunityUser = require("../models").communityUser;
 const UserModel = require("../models").user;
 const CommunityActivityModel = require("../models").communityActivity;
 
@@ -164,7 +165,7 @@ const createNewCommunity = async (req, res) => {
       });
 
       // leader sebagai anggota komunitas yang baru
-      const newCommunityUser = await CommunityUser.create({
+      await CommunityUser.create({
         users_id: req.body.leader_id,
         communities_id: newCommunity.id,
         community_role: "leader",
@@ -176,11 +177,11 @@ const createNewCommunity = async (req, res) => {
         data: newCommunity,
       };
     } catch (error) {
-      code = 422;
-      response = {
-        status: "ERROR",
-        message: error.parent.sqlMessage,
-      };
+      res.status(422).json({
+        success: false,
+        message: "Error created communities",
+        error: error.message,
+      });
     }
   }
 
