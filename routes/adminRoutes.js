@@ -19,7 +19,7 @@ router.post("/communities", authMiddleware.authenticate, authMiddleware.checkAdm
 router.patch("/communities/:id", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityController.updateCommunity);
 router.delete("/communities/:id", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityController.deleteCommunity);
 router.get("/communities/:id/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.getAllCommunityMember);
-router.post("/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.createNewCommunityUser);
+router.post("/communities/:id/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.createNewCommunityUser);
 router.delete("/community-members/:id", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.deleteCommunityMember);
 
 module.exports = router;
