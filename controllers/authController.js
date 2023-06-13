@@ -42,10 +42,9 @@ exports.login = async (req, res) => {
 
 exports.register = async (req, res) => {
   const { email, name, address, password } = req.body;
-
   try {
-    // Check if user with the same email already exists
-    const checkEmail = await User.findOne({ where: { email: email || "" } });
+    // Check if user with the same username already exists
+    const checkEmail = await User.findOne({ where: { email } });
     if (checkEmail) {
       return res.status(400).json({ message: "Email already exists" });
     }
@@ -53,24 +52,16 @@ exports.register = async (req, res) => {
     // Create a new user
     const pwd = await bcrypt.hash(password, 10);
     const newUser = await User.create({
-      email: email || "",
-      name: name || "",
-      address: address || "",
+      email,
+      name,
+      address,
       password: pwd,
     });
 
     // Generate JWT token
-    const token = jwt.sign(
-      {
-        email: newUser.email,
-        password: newUser.password,
-        role: newUser.role,
-      },
-      `${process.env.jwtSecret}`,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ email: newUser.email, password: newUser.password, role: newUser.role }, `${process.env.jwtSecret}`, { expiresIn: "1h" });
 
-    // Return token and user data
+    // Return token
     res.json({
       data: {
         email: newUser.email,
