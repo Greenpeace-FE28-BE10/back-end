@@ -69,7 +69,7 @@ exports.register = async (req, res) => {
         address: newUser.address,
       },
       token,
-      message: "Registrasi Success",
+      message: "Registration Success",
     });
   } catch (error) {
     console.error(error);
