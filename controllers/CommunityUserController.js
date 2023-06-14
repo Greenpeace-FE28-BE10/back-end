@@ -20,12 +20,14 @@ const getAllCommunityMember = async (req, res) => {
       where: {
         id: usersIds,
       },
-      attributes: ["name"],
+      attributes: ["name", "address", "email"],
     });
 
     const formattedCommunityMembers = communityMembers.map((member, index) => ({
       id: communityUsers[index].id,
       name: member.name,
+      address: member.address,
+      email: member.email,
       users_id: communityUsers[index].users_id,
     }));
 
