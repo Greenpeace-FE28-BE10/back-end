@@ -302,8 +302,8 @@ const updateCommunity = async (req, res) => {
       const existingLeader = await CommunityModel.findOne({
         where: {
           leader_id: req.body.leader_id,
-          id: {
-            [Sequelize.Op.ne]: req.params.id, // Exclude the updated community's ID
+          communities_id: {
+            [Sequelize.Op.ne]: req.params.id, // mengecualikan id komunitas yang lagi diupdate
           },
         },
       });
@@ -323,7 +323,7 @@ const updateCommunity = async (req, res) => {
           where: {
             postal_code: req.body.postal_code,
             id: {
-              [Sequelize.Op.ne]: req.params.id, // Exclude the updated community's ID
+              [Sequelize.Op.ne]: req.params.id, // mengecualikan id komunitas yang lagi diupdate
             },
           },
         });
