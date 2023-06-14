@@ -1,5 +1,4 @@
 // all functions related to community are listed down below
-const { Sequelize } = require("sequelize");
 const { format } = require("date-fns");
 const { id } = require("date-fns/locale");
 const CommunityModel = require("../models").community;
@@ -133,55 +132,104 @@ const createNewCommunity = async (req, res) => {
   if (req.body.leader_id == "" || req.body.leader_id == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the leader_id property cannot be null",
     };
   } else if (req.body.name == "" || req.body.name == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the name property cannot be null",
     };
   } else if (req.body.location == "" || req.body.location == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the location property cannot be null",
     };
   } else if (req.body.description == "" || req.body.description == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the description property cannot be null",
+    };
+  } else if (req.body.postal_code == "" || req.body.postal_code == undefined) {
+    code = 442;
+    response = {
+      success: false,
+      status: "ERROR",
+      message: "the postal_code property cannot be null",
     };
   } else {
     try {
-      // buat komunitas baru
-      const newCommunity = await CommunityModel.create({
-        leader_id: req.body.leader_id,
-        name: req.body.name,
-        location: req.body.location,
-        description: req.body.description,
+      // memeriksa apabila user yang sama sudah menjadi leader untuk komunitas yang sudah ada
+      const existingLeader = await CommunityModel.findOne({
+        where: {
+          leader_id: req.body.leader_id,
+        },
       });
 
-      // leader sebagai anggota komunitas yang baru
-      await CommunityUser.create({
-        users_id: req.body.leader_id,
-        communities_id: newCommunity.id,
-        community_role: "leader",
-      });
+      // conditional statement untuk user yang sudah menjadi leader untuk komunitas yang berbeda
+      if (existingLeader) {
+        const existingCommunity = await CommunityModel.findByPk(existingLeader.id);
+        code = 422;
+        response = {
+          success: false,
+          status: "ERROR",
+          message: `This user already lead ${existingCommunity.name} community`,
+        };
+      } else {
+        // lanjut memeriksa komunitas yang sudah di bentuk pada daerah yang sama berdasarkan kode pos
+        const existingCommunity = await CommunityModel.findOne({
+          where: {
+            postal_code: req.body.postal_code,
+          },
+        });
 
-      response = {
-        status: "SUCCESS",
-        message: "New Community Created",
-        data: newCommunity,
-      };
+        // conditional statement untuk komunitas yang udah ada
+        if (existingCommunity) {
+          code = 422;
+          response = {
+            success: false,
+            status: "ERROR",
+            message: "Oops! A community already exist in this area.",
+          };
+        } else {
+          // jika semua validasi passed, maka komunitas baru dapat dibuat
+          const newCommunity = await CommunityModel.create({
+            leader_id: req.body.leader_id,
+            name: req.body.name,
+            location: req.body.location,
+            description: req.body.description,
+            image: req.body.image || null,
+            postal_code: req.body.postal_code,
+          });
+
+          await CommunityUser.create({
+            users_id: req.body.leader_id,
+            communities_id: newCommunity.id,
+            community_role: "leader",
+          });
+
+          response = {
+            success: true,
+            status: "SUCCESS",
+            message: "New Community Created",
+            data: newCommunity,
+          };
+        }
+      }
     } catch (error) {
       res.status(422).json({
         success: false,
-        message: "Error created communities",
+        message: "Error creating community",
         error: error.message,
       });
+      return;
     }
   }
 
