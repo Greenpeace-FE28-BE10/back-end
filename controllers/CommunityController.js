@@ -11,7 +11,7 @@ const CommunityActivityModel = require("../models").communityActivity;
 const getAllCommunity = async (req, res) => {
   try {
     const communities = await CommunityModel.findAll({
-      attributes: ["id", "name", "location", "leader_id"],
+      attributes: ["id", "name", "location", "leader_id", "image", "postal_code"],
     });
 
     const leaderIds = communities.map((community) => community.leader_id); // mengambil semua leader_id dari communities
@@ -33,6 +33,8 @@ const getAllCommunity = async (req, res) => {
       id: community.id,
       name: community.name,
       location: community.location,
+      postal_code: community.postal_code,
+      image: community.image,
       leader_id: community.leader_id,
       leader_name: leaderMap[community.leader_id], // Add leader name to each community object
     }));
@@ -60,7 +62,7 @@ const getCommunityDetail = async (req, res) => {
 
     // mengambil data komunitas dan aktivitasnya berdasarkan communityId
     const communityDetail = await CommunityModel.findByPk(communityId, {
-      attributes: ["id", "name", "location", "description", "leader_id"],
+      attributes: ["id", "name", "location", "description", "leader_id", "image", "postal_code"],
     });
 
     // mengambil aktivitas di satu komunitas
@@ -107,6 +109,8 @@ const getCommunityDetail = async (req, res) => {
           id: communityDetail.id,
           name: communityDetail.name,
           location: communityDetail.location,
+          postal_code: communityDetail.postal_code,
+          image: communityDetail.image,
           description: communityDetail.description,
         },
         communityActivities: formattedActivities,
