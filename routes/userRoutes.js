@@ -23,4 +23,6 @@ router.patch("/communities/:id", authMiddleware.authenticate, CommunityControlle
 router.post("/communities/activity", CommunityActivityController.createNewActivity);
 router.patch("/communities/activity/:id", CommunityActivityController.updateActivity);
 router.delete("/communities/activity/:id", CommunityActivityController.deleteActivity);
+router.get("/communities/:id/community-members", authMiddleware.authenticate, CommunityUserController.getAllCommunityMember);
+router.delete("/community-members/:id", authMiddleware.authenticate, CommunityUserController.deleteCommunityMember);
 module.exports = router;

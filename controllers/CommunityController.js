@@ -133,145 +133,251 @@ const createNewCommunity = async (req, res) => {
   if (req.body.leader_id == "" || req.body.leader_id == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the leader_id property cannot be null",
     };
+    res.status(code).json(response);
+    return;
   } else if (req.body.name == "" || req.body.name == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the name property cannot be null",
     };
+    res.status(code).json(response);
+    return;
   } else if (req.body.location == "" || req.body.location == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the location property cannot be null",
     };
+    res.status(code).json(response);
+    return;
   } else if (req.body.description == "" || req.body.description == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the description property cannot be null",
     };
+    res.status(code).json(response);
+    return;
+  } else if (req.body.postal_code == "" || req.body.postal_code == undefined) {
+    code = 442;
+    response = {
+      success: false,
+      status: "ERROR",
+      message: "the postal_code property cannot be null",
+    };
+    res.status(code).json(response);
+    return;
   } else {
     try {
-      // buat komunitas baru
-      const newCommunity = await CommunityModel.create({
-        leader_id: req.body.leader_id,
-        name: req.body.name,
-        location: req.body.location,
-        description: req.body.description,
+      // memeriksa apabila user yang sama sudah menjadi leader untuk komunitas yang sudah ada
+      const existingLeader = await CommunityModel.findOne({
+        where: {
+          leader_id: req.body.leader_id,
+        },
       });
 
-      // leader sebagai anggota komunitas yang baru
-      await CommunityUser.create({
-        users_id: req.body.leader_id,
-        communities_id: newCommunity.id,
-        community_role: "leader",
-      });
+      // conditional statement untuk user yang sudah menjadi leader untuk komunitas yang berbeda
+      if (existingLeader) {
+        const existingCommunity = await CommunityModel.findByPk(existingLeader.id);
+        code = 422;
+        response = {
+          success: false,
+          status: "ERROR",
+          message: `This user already lead ${existingCommunity.name} community`,
+        };
+      } else {
+        // lanjut memeriksa komunitas yang sudah di bentuk pada daerah yang sama berdasarkan kode pos
+        const existingCommunity = await CommunityModel.findOne({
+          where: {
+            postal_code: req.body.postal_code,
+          },
+        });
 
-      response = {
-        status: "SUCCESS",
-        message: "New Community Created",
-        data: newCommunity,
-      };
+        // conditional statement untuk komunitas yang udah ada
+        if (existingCommunity) {
+          code = 422;
+          response = {
+            success: false,
+            status: "ERROR",
+            message: "Oops! A community already exist in this area.",
+          };
+          res.status(code).json(response);
+          return;
+        } else {
+          // jika semua validasi passed, maka komunitas baru dapat dibuat
+          const newCommunity = await CommunityModel.create({
+            leader_id: req.body.leader_id,
+            name: req.body.name,
+            location: req.body.location,
+            description: req.body.description,
+            image: req.body.image || null,
+            postal_code: req.body.postal_code,
+          });
+
+          await CommunityUser.create({
+            users_id: req.body.leader_id,
+            communities_id: newCommunity.id,
+            community_role: "leader",
+          });
+
+          response = {
+            success: true,
+            status: "SUCCESS",
+            message: "New Community Created",
+            data: newCommunity,
+          };
+          res.status(code).json(response);
+          return;
+        }
+      }
     } catch (error) {
       res.status(422).json({
         success: false,
-        message: "Error created communities",
+        message: "Error creating community",
         error: error.message,
       });
+      return;
     }
-  }
-
-  res.status(code).json(response);
-};
-
-// UPDATE - PUT
-const updateCommunity = async (req, res) => {
-  let response = {};
-  let code = 200;
-  if (req.body.leader_id == "" || req.body.leader_id == undefined) {
-    code = 442;
-    response = {
-      status: "SUCCESS",
-      message: "the leader_id property cannot be null",
-    };
-  } else if (req.body.name == "" || req.body.name == undefined) {
-    code = 442;
-    response = {
-      status: "SUCCESS",
-      message: "the name property cannot be null",
-    };
-  } else if (req.body.location == "" || req.body.location == undefined) {
-    code = 442;
-    response = {
-      status: "SUCCESS",
-      message: "the location property cannot be null",
-    };
-  } else if (req.body.description == "" || req.body.description == undefined) {
-    code = 442;
-    response = {
-      status: "SUCCESS",
-      message: "the description property cannot be null",
-    };
-  } else {
-    const community = await CommunityModel.findOne({
-      where: {
-        id: req.params.id,
-      },
-    });
-
-    if (!community) {
-      response = {
-        status: "SUCCESS",
-        message: "Data not found",
-      };
-    } else {
-      (community.leader_id = req.body.leader_id), (community.name = req.body.name), (community.location = req.body.location), (community.description = req.body.description);
-
-      community.save();
-      response = {
-        status: "SUCCESS",
-        message: "Community Updated Successfully",
-        data: community,
-      };
-    }
-
-    res.status(code).json(response);
-    return;
   }
 };
 
 // UPDATE - PATCH
-const updateCommunity2 = async (req, res) => {
+const updateCommunity = async (req, res) => {
   let response = {};
   let code = 200;
 
-  const community = await CommunityModel.findOne({
-    where: {
-      id: req.params.id,
-    },
-  });
-
-  if (!community) {
+  if (req.body.leader_id == "" || req.body.leader_id == undefined) {
+    code = 442;
     response = {
-      status: "SUCCESS",
-      message: "Data not found",
+      success: false,
+      status: "ERROR",
+      message: "The leader_id property cannot be null",
     };
+    res.status(code).json(response);
+    return;
+  } else if (req.body.name == "" || req.body.name == undefined) {
+    code = 442;
+    response = {
+      success: false,
+      status: "ERROR",
+      message: "The name property cannot be null",
+    };
+
+    res.status(code).json(response);
+    return;
+  } else if (req.body.location == "" || req.body.location == undefined) {
+    code = 442;
+    response = {
+      success: false,
+      status: "ERROR",
+      message: "The location property cannot be null",
+    };
+
+    res.status(code).json(response);
+    return;
+  } else if (req.body.description == "" || req.body.description == undefined) {
+    code = 442;
+    response = {
+      success: false,
+      status: "ERROR",
+      message: "The description property cannot be null",
+    };
+
+    res.status(code).json(response);
+    return;
   } else {
-    (community.leader_id = req.body.leader_id), (community.name = req.body.name), (community.location = req.body.location), (community.description = req.body.description);
-    community.save();
-    response = {
-      status: "SUCCESS",
-      message: "Community Updated Successfully",
-      data: community,
-    };
-  }
+    try {
+      const existingLeader = await CommunityModel.findOne({
+        where: {
+          leader_id: req.body.leader_id,
+          id: {
+            [Sequelize.Op.ne]: req.params.id, // Exclude the updated community's ID
+          },
+        },
+      });
 
-  res.status(code).json(response);
-  return;
+      if (existingLeader) {
+        const existingCommunity = await CommunityModel.findByPk(existingLeader.id);
+        code = 422;
+        response = {
+          success: false,
+          status: "ERROR",
+          message: `This user already leads ${existingCommunity.name}`,
+        };
+        res.status(code).json(response);
+        return;
+      } else {
+        const existingCommunity = await CommunityModel.findOne({
+          where: {
+            postal_code: req.body.postal_code,
+            id: {
+              [Sequelize.Op.ne]: req.params.id, // Exclude the updated community's ID
+            },
+          },
+        });
+
+        if (existingCommunity) {
+          code = 422;
+          response = {
+            success: false,
+            status: "ERROR",
+            message: "Oops! A community already exists in this area.",
+          };
+
+          res.status(code).json(response);
+          return;
+        } else {
+          const community = await CommunityModel.findByPk(req.params.id);
+
+          if (!community) {
+            response = {
+              success: false,
+              status: "ERROR",
+              message: "Data not found",
+            };
+            res.status(code).json(response);
+            return;
+          } else {
+            community.leader_id = req.body.leader_id;
+            community.name = req.body.name;
+            community.location = req.body.location;
+            community.description = req.body.description;
+            community.image = req.body.image;
+            community.postal_code = req.body.postal_code;
+
+            await community.save();
+
+            response = {
+              success: true,
+              status: "SUCCESS",
+              message: "Community Updated Successfully",
+              data: community,
+            };
+            res.status(code).json(response);
+            return;
+          }
+        }
+      }
+    } catch (error) {
+      code = 422;
+      response = {
+        success: false,
+        status: "ERROR",
+        message: "Error updating community",
+        error: error.message,
+      };
+      res.status(code).json(response);
+      return;
+    }
+  }
 };
 
 // DELETE - DELETE
@@ -319,7 +425,6 @@ module.exports = {
   getAllCommunity,
   createNewCommunity,
   updateCommunity,
-  updateCommunity2,
   deleteCommunity,
   getCommunityDetail,
 };

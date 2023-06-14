@@ -23,6 +23,14 @@ module.exports = {
         references: { model: "users", key: "id" },
         foreignKey: true,
       },
+      image: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      postal_code: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
