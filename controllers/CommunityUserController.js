@@ -1,5 +1,4 @@
 // write all related function to community_users entity down below
-const { Sequelize } = require("sequelize");
 const CommunityUserModel = require("../models").communityUser;
 const UserModel = require("../models").user;
 
@@ -50,36 +49,77 @@ const createNewCommunityUser = async (req, res) => {
   let code = 200;
   let communityId = req.params.id;
 
+  // validasi users_id
   if (req.body.users_id == "" || req.body.users_id == undefined) {
     code = 442;
     response = {
       status: "SUCCESS",
-      message: "the users_id property cannot be null",
+      message: "The users_id property cannot be null",
     };
-  } else {
-    try {
-      // daftarkan anggota komunitas baru
-      const newCommunityUser = await CommunityUserModel.create({
-        users_id: req.body.users_id,
-        communities_id: communityId,
-        community_role: "member",
-      });
-
-      response = {
-        status: "SUCCESS",
-        message: "Anda sudah terdaftar menjadi anggota komunitas ini",
-        data: newCommunityUser,
-      };
-    } catch (error) {
-      code = 422;
-      response = {
-        status: "ERROR",
-        message: error.parent && error.parent.sqlMessage ? error.parent.sqlMessage : "Unknown error occurred",
-      };
-    }
+    res.status(code).json(response);
+    return;
   }
 
-  res.status(code).json(response);
+  try {
+    // mengambil data yang value communities_id dan users_id sama seperti request
+    const existingCommunityUser = await CommunityUserModel.findOne({
+      where: {
+        communities_id: communityId,
+        users_id: req.body.users_id,
+      },
+    });
+
+    // validasi agar users_id tidak terdaftar dalam >1 komunitas yang sama
+    if (existingCommunityUser) {
+      response = {
+        success: false,
+        status: "ERROR",
+        message: "A community user with the same communities_id and users_id already exists",
+      };
+      res.status(422).json(response);
+      return;
+    }
+
+    // mengambil data komunitas yang leader_id nya sesuai sama dengan request users_id
+    const existingLeader = await CommunityUserModel.findOne({
+      where: {
+        users_id: req.body.users_id,
+        community_role: "leader",
+      },
+    });
+
+    // validasi agar users_id yang sama tidak menjadi leader >1 komunitas
+    if (req.body.community_role === "leader" && existingLeader) {
+      response = {
+        status: "ERROR",
+        message: "This user is already a leader in another community!",
+      };
+      res.status(422).json(response);
+      return;
+    }
+
+    // mendaftarkan member komunitas yang baru
+    const newCommunityUser = await CommunityUserModel.create({
+      users_id: req.body.users_id,
+      communities_id: communityId,
+      community_role: req.body.community_role || "member",
+    });
+
+    response = {
+      success: true,
+      message: "You have been successfully registered as a member of this community",
+      data: newCommunityUser,
+    };
+    res.status(code).json(response);
+  } catch (error) {
+    code = 422;
+    response = {
+      success: false,
+      status: "ERROR",
+      message: error.parent && error.parent.sqlMessage ? error.parent.sqlMessage : "Unknown error occurred",
+    };
+    res.status(code).json(response);
+  }
 };
 
 // DELETE - DELETE
