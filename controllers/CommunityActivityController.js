@@ -1,10 +1,7 @@
 // write all related function to community_activities entity down below
-const { Sequelize } = require("sequelize");
-const CommunityModel = require("../models").community;
-const CommunityUser = require("../models").communityUser;
 const CommunityActivityModel = require("../models").communityActivity;
 
-// READ - GET ACTIVITY DETAIL BY communitiesId
+// READ - GET ACTIVITY DETAIL BY communityId
 const getAllActivities = async (req, res) => {
   // membuat variabel untuk menyimpan status, message, dan data
   let response = {};
@@ -43,14 +40,9 @@ const getAllActivities = async (req, res) => {
 const createNewActivity = async (req, res) => {
   let response = {};
   let code = 200;
+  communityId = req.params.communityId;
 
-  if (req.body.communities_id == "" || req.body.communities_id == undefined) {
-    code = 442;
-    response = {
-      status: "SUCCESS",
-      message: "the communities_id property cannot be null",
-    };
-  } else if (req.body.title == "" || req.body.title == undefined) {
+  if (req.body.title == "" || req.body.title == undefined) {
     code = 442;
     response = {
       status: "SUCCESS",
@@ -59,7 +51,8 @@ const createNewActivity = async (req, res) => {
   } else if (req.body.description == "" || req.body.description == undefined) {
     code = 442;
     response = {
-      status: "SUCCESS",
+      success: false,
+      status: "ERROR",
       message: "the description property cannot be null",
     };
   } else {
@@ -67,7 +60,7 @@ const createNewActivity = async (req, res) => {
       let defaultDate = new Date();
       // buat komunitas baru
       const newActivity = await CommunityActivityModel.create({
-        communities_id: req.body.communities_id,
+        communities_id: communityId,
         title: req.body.title,
         date: req.body.date || defaultDate,
         description: req.body.description,
@@ -96,13 +89,10 @@ const updateActivity = async (req, res) => {
   let response = {};
   let defaultDate = new Date();
   let code = 200;
-  if (req.body.communities_id == "" || req.body.communities_id == undefined) {
-    code = 442;
-    response = {
-      status: "SUCCESS",
-      message: "the leader_id property cannot be null",
-    };
-  } else if (req.body.title == "" || req.body.title == undefined) {
+  let activityId = req.params.activityId;
+  let communityId = req.params.communityId;
+
+  if (req.body.title == "" || req.body.title == undefined) {
     code = 442;
     response = {
       status: "SUCCESS",
@@ -115,7 +105,7 @@ const updateActivity = async (req, res) => {
       message: "the description property cannot be null",
     };
   } else {
-    const communityActivity = await CommunityActivityModel.findByPk(req.params.id);
+    const communityActivity = await CommunityActivityModel.findByPk(activityId);
 
     if (!communityActivity) {
       response = {
@@ -123,7 +113,7 @@ const updateActivity = async (req, res) => {
         message: "Data not found",
       };
     } else {
-      (communityActivity.communities_id = req.body.communities_id),
+      (communityActivity.communities_id = communityId),
         (communityActivity.title = req.body.title),
         (communityActivity.date = req.body.date || defaultDate),
         (communityActivity.status = req.body.status || "upcoming"),
@@ -131,6 +121,7 @@ const updateActivity = async (req, res) => {
 
       communityActivity.save();
       response = {
+        success: true,
         status: "SUCCESS",
         message: "Community Updated Successfully",
         data: communityActivity,
@@ -147,7 +138,7 @@ const deleteActivity = async (req, res) => {
   let response = {};
   let code = 200;
 
-  const activityId = req.params.id;
+  const activityId = req.params.activityId;
 
   // menghapus komunitas
   const communityActivity = await CommunityActivityModel.findByPk(activityId);
