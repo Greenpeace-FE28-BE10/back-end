@@ -18,11 +18,14 @@ router.get("/home", authMiddleware.authenticate, (req, res) => {
 router.get("/communities", authMiddleware.authenticate, CommunityController.getAllCommunity);
 router.get("/communities/:id", authMiddleware.authenticate, CommunityController.getCommunityDetail);
 router.post("/communities", authMiddleware.authenticate, CommunityController.createNewCommunity);
-router.post("/communities/membership", authMiddleware.authenticate, CommunityUserController.createNewCommunityUser);
 router.patch("/communities/:id", authMiddleware.authenticate, CommunityController.updateCommunity);
-router.post("/communities/activity", CommunityActivityController.createNewActivity);
-router.patch("/communities/activity/:id", CommunityActivityController.updateActivity);
-router.delete("/communities/activity/:id", CommunityActivityController.deleteActivity);
-router.get("/communities/:id/community-members", authMiddleware.authenticate, CommunityUserController.getAllCommunityMember);
-router.delete("/community-members/:id", authMiddleware.authenticate, CommunityUserController.deleteCommunityMember);
+
+router.post("/communities/membership", authMiddleware.authenticate, CommunityUserController.createNewCommunityUser);
+
+router.post("/communities/:communityId/activity", CommunityActivityController.createNewActivity);
+router.patch("/communities/:communityId/activity/:activityId", CommunityActivityController.updateActivity);
+router.delete("/communities/:communityId/activity/:activityId", CommunityActivityController.deleteActivity);
+
+router.get("/communities/:communityId/community-members", authMiddleware.authenticate, CommunityUserController.getAllCommunityMember);
+router.delete("/communities/:communityId/community-members/:memberId", authMiddleware.authenticate, CommunityUserController.deleteCommunityMember);
 module.exports = router;

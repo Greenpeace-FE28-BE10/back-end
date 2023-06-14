@@ -5,13 +5,13 @@ const UserModel = require("../models").user;
 // READ - GET
 const getAllCommunityMember = async (req, res) => {
   try {
-    let communityId = req.params.id;
+    let communityId = req.params.communityId;
 
     const communityUsers = await CommunityUserModel.findAll({
       where: {
         communities_id: communityId,
       },
-      attributes: ["id", "users_id"], // Include the id and users_id attributes
+      attributes: ["id", "users_id"], // users_id diambil untuk memetakan data dari tabel member komunitas ke user
     });
 
     const usersIds = communityUsers.map((communityUser) => communityUser.users_id);
@@ -49,7 +49,7 @@ const getAllCommunityMember = async (req, res) => {
 const createNewCommunityUser = async (req, res) => {
   let response = {};
   let code = 200;
-  let communityId = req.params.id;
+  let communityId = req.params.communityId;
 
   // validasi users_id
   if (req.body.users_id == "" || req.body.users_id == undefined) {
@@ -129,7 +129,7 @@ const deleteCommunityMember = async (req, res) => {
   let response = {};
   let code = 200;
 
-  const communityUserId = req.params.id;
+  const communityUserId = req.params.memberId;
 
   // hapus semua data member komunitas
   await CommunityUserModel.destroy({

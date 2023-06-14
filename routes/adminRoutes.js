@@ -18,8 +18,9 @@ router.get("/communities/:id", authMiddleware.authenticate, authMiddleware.check
 router.post("/communities", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityController.createNewCommunity);
 router.patch("/communities/:id", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityController.updateCommunity);
 router.delete("/communities/:id", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityController.deleteCommunity);
-router.get("/communities/:id/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.getAllCommunityMember);
-router.post("/communities/:id/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.createNewCommunityUser);
-router.delete("/community-members/:id", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.deleteCommunityMember);
+
+router.get("/communities/:communityId/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.getAllCommunityMember);
+router.post("/communities/:communityId/community-members", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.createNewCommunityUser);
+router.delete("/communities/:communityId/community-members/:memberId", authMiddleware.authenticate, authMiddleware.checkAdminRole, CommunityUserController.deleteCommunityMember);
 
 module.exports = router;
