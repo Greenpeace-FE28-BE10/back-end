@@ -8,9 +8,6 @@ Request :
 
 - Method : POST
 - Endpoint : `/api/login`
-- Header :
-  - Content-Type: application/json
-  - Accept: application/json
 - Body :
 
 ```json
@@ -41,9 +38,6 @@ Request :
 
 - Method : POST
 - Endpoint : `/api/register`
-- Header :
-  - Content-Type: application/json
-  - Accept: application/json
 - Body :
 
 ```json
@@ -90,28 +84,28 @@ Response :
 
 ```json
 {
-    "success": boolean,
-    "message": "SUCCESS",
-    "communityData": [
-        {
-            "id": integer,
-            "name": "string",
-            "location": "string",
-            "postal_code": "string",
-            "image": "string",
-            "leader_id": integer,
-            "leader_name": "string"
-        },
-        {
-            "id": integer,
-            "name": "string",
-            "location": "string",
-            "postal_code": "string",
-            "image": "string",
-            "leader_id": integer,
-            "leader_name": "string"
-        },
-    ]
+  "success": "boolean",
+  "message": "SUCCESS",
+  "communityData": [
+    {
+      "id": "integer",
+      "name": "string",
+      "location": "string",
+      "postal_code": "string",
+      "image": "string",
+      "leader_id": "integer",
+      "leader_name": "string"
+    },
+    {
+      "id": "integer",
+      "name": "string",
+      "location": "string",
+      "postal_code": "string",
+      "image": "string",
+      "leader_id": "integer",
+      "leader_name": "string"
+    }
+  ]
 }
 ```
 
@@ -128,29 +122,29 @@ Response :
 
 ```json
 {
-    "success": boolean,
-    "status": "string",
-    "message": "string",
-    "communityDetail": {
-        "id": integer,
-        "name": "string",
-        "location": "string",
-        "postal_code": "string",
-        "image": "string",
-        "description": "text"
-    },
-    "communityActivities": [
-        {
-            "title": "string",
-            "description": "string",
-            "date": date,
-            "status": "string"
-        }
-    ],
-    "communityLeader": {
-        "id": integer,
-        "name": "string"
+  "success": "boolean",
+  "status": "string",
+  "message": "string",
+  "communityDetail": {
+    "id": "integer",
+    "name": "string",
+    "location": "string",
+    "postal_code": "string",
+    "image": "string",
+    "description": "text"
+  },
+  "communityActivities": [
+    {
+      "title": "string",
+      "description": "string",
+      "date": "date",
+      "status": "string"
     }
+  ],
+  "communityLeader": {
+    "id": "integer",
+    "name": "string"
+  }
 }
 ```
 
@@ -164,18 +158,18 @@ Request :
 - Endpoint admin: `/api/v1/communities`
 - Endpoint user: `/api/v2/communities`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 - Body :
 
 ```json
 {
-    "name" : "string",
-    "leader_id" : integer,
-    "location" : "string",
-    "postal_code": "string",
-    "image" : "string",
-    "description" : "text"
+  "name": "string",
+  "leader_id": "integer",
+  "location": "string",
+  "postal_code": "string",
+  "image": "string",
+  "description": "text"
 }
 ```
 
@@ -183,29 +177,29 @@ Response :
 
 ```json
 {
-    "success": boolean,
-    "status": "string",
-    "message": "string",
-    "communityDetail": {
-        "id": integer,
-        "name": "string",
-        "location": "string",
-        "postal_code": "string",
-        "image": "string",
-        "description": "text"
-    },
-    "communityActivities": [
-        {
-            "title": "string",
-            "description": "string",
-            "date": date,
-            "status": "string"
-        }
-    ],
-    "communityLeader": {
-        "id": integer,
-        "name": "string"
+  "success": "boolean",
+  "status": "string",
+  "message": "string",
+  "communityDetail": {
+    "id": "integer",
+    "name": "string",
+    "location": "string",
+    "postal_code": "string",
+    "image": "string",
+    "description": "text"
+  },
+  "communityActivities": [
+    {
+      "title": "string",
+      "description": "string",
+      "date": "date",
+      "status": "string"
     }
+  ],
+  "communityLeader": {
+    "id": "integer",
+    "name": "string"
+  }
 }
 ```
 
@@ -219,18 +213,18 @@ Request :
 - Endpoint admin: `/api/v1/communities/{id}`
 - Endpoint user: `/api/v2/communities/{id}`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 - Body :
 
 ```json
 {
-    "name" : "string",
-    "leader_id" : integer,
-    "location" : "string",
-    "postal_code": "string",
-    "image" : "string",
-    "description" : "text"
+  "name": "string",
+  "leader_id": "integer",
+  "location": "string",
+  "postal_code": "string",
+  "image": "string",
+  "description": "text"
 }
 ```
 
@@ -238,20 +232,20 @@ Response :
 
 ```json
 {
-    "success": boolean,
-    "status": "string",
-    "message": "string",
-    "data": {
-        "id": integer,
-        "name": "string",
-        "location": "string",
-        "description": "text",
-        "leader_id": integer,
-        "image": "string",
-        "postal_code": "string",
-        "createdAt": date,
-        "updatedAt": date
-    }
+  "success": "boolean",
+  "status": "string",
+  "message": "string",
+  "data": {
+    "id": "integer",
+    "name": "string",
+    "location": "string",
+    "description": "text",
+    "leader_id": "integer",
+    "image": "string",
+    "postal_code": "string",
+    "createdAt": "date",
+    "updatedAt": "date"
+  }
 }
 ```
 
@@ -264,14 +258,14 @@ Request :
 - Method : DELETE
 - Endpoint: `/api/v1/communities/{id}`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 Response :
 
 ```json
 {
-    "status": boolean,
-    "message": "string"
+  "status": "boolean",
+  "message": "string"
 }
 ```
 
@@ -284,10 +278,10 @@ Response :
 Request :
 
 - Method : GET
-- Endpoint admin: `/api/v1/communities/{id}/community-member`
-- Endpoint user: `/api/v2/communities/{id}/community-member`
+- Endpoint admin: `/api/v1/communities/{id}/community-members`
+- Endpoint user: `/api/v2/communities/{id}/community-members`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 Response :
 
@@ -324,7 +318,7 @@ Request :
 - Endpoint admin: `/api/v1/communities/{id}/community-members`
 - Endpoint user: `/api/v2/communities/{id}/community-members`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 - Body
 
@@ -361,7 +355,7 @@ Request :
 - Method : DELETE
 - Endpoint admin: `/api/v1/communities/{communityId}/community-members/{memberId}`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 Response :
 
@@ -383,7 +377,7 @@ Request :
 - Method : POST
 - Endpoint: `/api/v2/communities/{communityId}/activity`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
   -Body:
 
 ```json
@@ -399,18 +393,18 @@ Response :
 
 ```json
 {
+  "status": "string",
+  "message": "string",
+  "data": {
+    "id": "integer",
+    "communities_id": "integer",
+    "title": "string",
+    "date": "date",
+    "description": " text",
     "status": "string",
-    "message": "string",
-    "data": {
-        "id": integer,
-        "communities_id": "integer",
-        "title": "string",
-        "date": "date",
-        "description": " text",
-        "status": "string",
-        "updatedAt": "date",
-        "createdAt": "date"
-    }
+    "updatedAt": "date",
+    "createdAt": "date"
+  }
 }
 ```
 
@@ -423,7 +417,7 @@ Request :
 - Method : PATCH
 - Endpoint: `/api/v2/communities/{communityId}/activity/{activityId}`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
   -Body:
 
 ```json
@@ -439,19 +433,19 @@ Response :
 
 ```json
 {
-    "success": boolean,
+  "success": "boolean",
+  "status": "string",
+  "message": "string",
+  "data": {
+    "id": "integer",
+    "communities_id": "integer",
+    "title": "string",
+    "description": " text",
+    "date": "date",
     "status": "string",
-    "message": "string",
-    "data": {
-        "id": integer,
-        "communities_id": "integer",
-        "title": "string",
-        "description": " text",
-        "date": "date",
-        "status": "string",
-        "createdAt": "date",
-        "updatedAt": "date"
-    }
+    "createdAt": "date",
+    "updatedAt": "date"
+  }
 }
 ```
 
@@ -464,7 +458,7 @@ Request :
 - Method : DELETE
 - Endpoint: `/api/v2/communities/{communityId}/activity/{activityId}`
 - Header
-  Authorization: Bearer <token>
+  Authorization: Bearer token
 
 Response :
 
