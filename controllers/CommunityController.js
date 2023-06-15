@@ -81,6 +81,7 @@ const getCommunityDetail = async (req, res) => {
       });
 
       return {
+        id: activity.id,
         title: activity.title,
         description: activity.description,
         date: formattedDate,
