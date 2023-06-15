@@ -25,8 +25,6 @@ router.post("/communities/membership", authMiddleware.authenticate, CommunityUse
 router.post("/communities/:communityId/activity", CommunityActivityController.createNewActivity);
 router.patch("/communities/:communityId/activity/:activityId", CommunityActivityController.updateActivity);
 router.delete("/communities/:communityId/activity/:activityId", CommunityActivityController.deleteActivity);
-
-
 router.post("/communities/:communityId/community-members", authMiddleware.authenticate, CommunityUserController.createNewCommunityUser);
 router.get("/communities/:communityId/community-members", authMiddleware.authenticate, CommunityUserController.getAllCommunityMember);
 router.delete("/communities/:communityId/community-members/:memberId", authMiddleware.authenticate, CommunityUserController.deleteCommunityMember);
