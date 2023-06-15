@@ -70,7 +70,7 @@ const getCommunityDetail = async (req, res) => {
       where: {
         communities_id: communityId,
       },
-      attributes: ["communities_id", "title", "description", "date", "status"],
+      attributes: ["id", "communities_id", "title", "description", "date", "status"],
       group: ["status", "id"],
     });
 
