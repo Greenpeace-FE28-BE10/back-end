@@ -1,204 +1,478 @@
-## Endpoints
+# API Spec
 
-### POST /api/login
+## Authentication
 
-- **Description**: Allows a guest to log in to Hijauin.
-- **Input**: email, password
-- **Authentication**: No
-- **Authorization**: No
-- **Response**: User authentication token
+### Login
 
----
+Request :
 
-### POST /api/register
+- Method : POST
+- Endpoint : `/api/login`
+- Header :
+  - Content-Type: application/json
+  - Accept: application/json
+- Body :
 
-- **Description**: Allows a guest to register a new user in Hijauin.
-- **Input**: email, name, address, password, role
-- **Authentication**: No
-- **Authorization**: No
-- **Response**: User registration confirmation
+```json
+{
+  "email": "string, unique",
+  "password": "string"
+}
+```
 
----
+Response :
 
-### GET /api/communities
+```json
+{
+  "message": {
+    "id": "integer, unique",
+    "name": "string",
+    "email": "string",
+    "address": "string",
+    "role": "string"
+  },
+  "token": "string"
+}
+```
 
-- **Description**: Retrieves a list of communities.
-- **Authentication**: No
-- **Authorization**: No
-- **Response**: List of communities
+### Register
 
----
+Request :
 
-### GET /api/communities/{id}
+- Method : POST
+- Endpoint : `/api/register`
+- Header :
+  - Content-Type: application/json
+  - Accept: application/json
+- Body :
 
-- **Description**: Retrieves the details of a specific community, including its activities and leader.
-- **Input**: id
-- **Authentication**: No
-- **Authorization**: No
-- **Response**: Community details
+```json
+{
+  "name": "string",
+  "email": "string, unique",
+  "address": "string",
+  "password": "string"
+}
+```
 
----
+Response :
 
-### GET /api/v1/dashboard
-
-- **Description**: Retrieves the authorized homepage for an admin.
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: Admin dashboard
-
----
-
-### GET /api/v1/communities
-
-- **Description**: Retrieves a list of communities for an admin.
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: List of communities
-
----
-
-### GET /api/v1/communities/{id}
-
-- **Description**: Retrieves the details of a specific community for an admin, including its activities and leader.
-- **Input**: id
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: Community details
-
----
-
-### POST /api/v1/communities
-
-- **Description**: Allows an admin to create a new community.
-- **Input**: leader_id, name, location, description
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: New community details
+```json
+{
+    {
+    "data": {
+        "email": "string",
+        "name": "string",
+        "address": "string"
+    },
+    "token": "string",
+    "message": "Registration Success"
+}
+}
+```
 
 ---
 
-### PATCH /api/v1/communities/{id}
+<br><br>
 
-- **Description**: Allows an admin to update the information of a community.
-- **Input**: id, leader_id, name, location, description
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: Updated community details
+## Community
 
----
+### Get All Communities in Hijauin
 
-### DELETE /api/v1/communities/{id}
+Request :
 
-- **Description**: Allows an admin to delete a community.
-- **Input**: id
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: Deletion confirmation
+- Method : GET
+- Endpoint guest: `/api/communities`
+- Endpoint admin: `/api/v1/communities`
+- Endpoint admin: `/api/v2/communities`
 
----
+Response :
 
-### GET /api/v1/communities/{id}/community-members
+```json
+{
+    "success": boolean,
+    "message": "SUCCESS",
+    "communityData": [
+        {
+            "id": integer,
+            "name": "string",
+            "location": "string",
+            "postal_code": "string",
+            "image": "string",
+            "leader_id": integer,
+            "leader_name": "string"
+        },
+        {
+            "id": integer,
+            "name": "string",
+            "location": "string",
+            "postal_code": "string",
+            "image": "string",
+            "leader_id": integer,
+            "leader_name": "string"
+        },
+    ]
+}
+```
 
-- **Description**: Retrieves a list of members in a community for an admin.
-- **Input**: id
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: List of community members
+### Get Community Detail
 
----
+Request :
 
-### POST /api/v1/communities/{id}/community-members
+- Method : GET
+- Endpoint guest: `/api/communities/{id}`
+- Endpoint admin: `/api/v1/communities/{id}`
+- Endpoint admin: `/api/v2/communities/{id}`
 
-- **Description**: Allows an admin to create a new community user.
-- **Input**: users_id, communities_id
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: New community user details
+Response :
 
----
-
-### DELETE /api/v1/community-members/{id}
-
-- **Description**: Allows an admin to delete a community user.
-- **Input**: id
-- **Authentication**: Yes
-- **Authorization**: Admin
-- **Response**: Deletion confirmation
-
----
-
-### GET /api/v2/home
-
-- **Description**: Retrieves the authorized homepage for a user.
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: User homepage
-
----
-
-### GET /api/v2/communities
-
-- **Description**: Retrieves a list of communities for a user.
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: List of communities
-
----
-
-### GET /api/v2/communities/{id}
-
-- **Description**: Retrieves the details of a specific community for a user, including its activities and leader.
-- **Input**: id
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: Community details
-
----
-
-### POST /api/v2/communities
-
-- **Description**: Allows a user to create a new community.
-- **Input**: leader_id, name, location, description
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: New community details
+```json
+{
+    "success": boolean,
+    "status": "string",
+    "message": "string",
+    "communityDetail": {
+        "id": integer,
+        "name": "string",
+        "location": "string",
+        "postal_code": "string",
+        "image": "string",
+        "description": "text"
+    },
+    "communityActivities": [
+        {
+            "title": "string",
+            "description": "string",
+            "date": date,
+            "status": "string"
+        }
+    ],
+    "communityLeader": {
+        "id": integer,
+        "name": "string"
+    }
+}
+```
 
 ---
 
-### PATCH /api/v2/communities/{id}
+### Create New Community
 
-- **Description**: Allows a user who is the leader of a community to update the information of that community.
-- **Input**: id, leader_id, name, location, description
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: Updated community details
+Request :
+
+- Method : POST
+- Endpoint admin: `/api/v1/communities`
+- Endpoint user: `/api/v2/communities`
+- Header
+  Authorization: Bearer <token>
+
+- Body :
+
+```json
+{
+    "name" : "string",
+    "leader_id" : integer,
+    "location" : "string",
+    "postal_code": "string",
+    "image" : "string",
+    "description" : "text"
+}
+```
+
+Response :
+
+```json
+{
+    "success": boolean,
+    "status": "string",
+    "message": "string",
+    "communityDetail": {
+        "id": integer,
+        "name": "string",
+        "location": "string",
+        "postal_code": "string",
+        "image": "string",
+        "description": "text"
+    },
+    "communityActivities": [
+        {
+            "title": "string",
+            "description": "string",
+            "date": date,
+            "status": "string"
+        }
+    ],
+    "communityLeader": {
+        "id": integer,
+        "name": "string"
+    }
+}
+```
 
 ---
 
-### POST /api/v2/communities/membership
+### Update Community
 
-- **Description**: Allows a user to join a community.
-- **Input**: users_id, communities_id
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: Membership confirmation
+Request :
+
+- Method : PATCH
+- Endpoint admin: `/api/v1/communities/{id}`
+- Endpoint user: `/api/v2/communities/{id}`
+- Header
+  Authorization: Bearer <token>
+
+- Body :
+
+```json
+{
+    "name" : "string",
+    "leader_id" : integer,
+    "location" : "string",
+    "postal_code": "string",
+    "image" : "string",
+    "description" : "text"
+}
+```
+
+Response :
+
+```json
+{
+    "success": boolean,
+    "status": "string",
+    "message": "string",
+    "data": {
+        "id": integer,
+        "name": "string",
+        "location": "string",
+        "description": "text",
+        "leader_id": integer,
+        "image": "string",
+        "postal_code": "string",
+        "createdAt": date,
+        "updatedAt": date
+    }
+}
+```
 
 ---
 
-### POST /api/v2/communities/activity
+### Delete Community
 
-- **Description**: Allows a user who is the leader of a community to create a new activity in that community.
-- **Input**: id, communities_id, title, description, date, status
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: New activity details
+Request :
+
+- Method : DELETE
+- Endpoint: `/api/v1/communities/{id}`
+- Header
+  Authorization: Bearer <token>
+
+Response :
+
+```json
+{
+    "status": boolean,
+    "message": "string"
+}
+```
 
 ---
 
-### PATCH /api/v2/communities/activity/{id}
+## Community Members
 
-- **Description**: Allows a user who is the leader of a community to update an activity in that community.
-- **Input**: id
-- **Authentication**: Yes
-- **Authorization**: User
-- **Response**: Updated activity
+### Get Community Member List
+
+Request :
+
+- Method : GET
+- Endpoint admin: `/api/v1/communities/{id}/community-member`
+- Endpoint user: `/api/v2/communities/{id}/community-member`
+- Header
+  Authorization: Bearer <token>
+
+Response :
+
+```json
+{
+    "success": boolean,
+    "message": "string",
+    "communityMembers": [
+        {
+            "id": integer,
+            "name": "string",
+            "address": "string",
+            "email": "string",
+            "users_id": integer
+        },
+        {
+            "id": integer,
+            "name": "string",
+            "address": "string",
+            "email": "string",
+            "users_id": integer
+        }
+    ]
+}
+```
+
+---
+
+### Create New Community Member (User self-enrollment or added by admin)
+
+Request :
+
+- Method : POST
+- Endpoint admin: `/api/v1/communities/{id}/community-members`
+- Endpoint user: `/api/v2/communities/{id}/community-members`
+- Header
+  Authorization: Bearer <token>
+
+- Body
+
+```json
+{
+  "users_id": "integer",
+  "community_role": "string"
+}
+```
+
+Response :
+
+```json
+{
+  "success": "boolean",
+  "message": "string",
+  "data": {
+    "id": "integer",
+    "users_id": "integer",
+    "communities_id": "integer",
+    "community_role": "string",
+    "updatedAt": "2023-06-14T19:34:19.693Z",
+    "createdAt": "2023-06-14T19:34:19.693Z"
+  }
+}
+```
+
+---
+
+### Delete Community Member
+
+Request :
+
+- Method : DELETE
+- Endpoint admin: `/api/v1/communities/{communityId}/community-members/{memberId}`
+- Header
+  Authorization: Bearer <token>
+
+Response :
+
+```json
+{
+  "status": "string",
+  "message": "string"
+}
+```
+
+---
+
+## Community Activities
+
+### Create New Activity
+
+Request :
+
+- Method : POST
+- Endpoint: `/api/v2/communities/{communityId}/activity`
+- Header
+  Authorization: Bearer <token>
+  -Body:
+
+```json
+{
+  "title": "string ",
+  "description": " text",
+  "date": "date",
+  "status": "string"
+}
+```
+
+Response :
+
+```json
+{
+    "status": "string",
+    "message": "string",
+    "data": {
+        "id": integer,
+        "communities_id": "integer",
+        "title": "string",
+        "date": "date",
+        "description": " text",
+        "status": "string",
+        "updatedAt": "date",
+        "createdAt": "date"
+    }
+}
+```
+
+---
+
+### Update Activity
+
+Request :
+
+- Method : PATCH
+- Endpoint: `/api/v2/communities/{communityId}/activity/{activityId}`
+- Header
+  Authorization: Bearer <token>
+  -Body:
+
+```json
+{
+  "title": "string",
+  "description": " text",
+  "date": "date",
+  "status": "string"
+}
+```
+
+Response :
+
+```json
+{
+    "success": boolean,
+    "status": "string",
+    "message": "string",
+    "data": {
+        "id": integer,
+        "communities_id": "integer",
+        "title": "string",
+        "description": " text",
+        "date": "date",
+        "status": "string",
+        "createdAt": "date",
+        "updatedAt": "date"
+    }
+}
+```
+
+---
+
+### Delete Activity
+
+Request :
+
+- Method : DELETE
+- Endpoint: `/api/v2/communities/{communityId}/activity/{activityId}`
+- Header
+  Authorization: Bearer <token>
+
+Response :
+
+```json
+{
+  "status": "string",
+  "message": "string"
+}
+```
+
+---
